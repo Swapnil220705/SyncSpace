@@ -1,8 +1,5 @@
 import { env } from '../config/env.js';
 
-/**
- * Email delivery stub — swap for SendGrid, Resend, SES, etc. in production.
- */
 export async function sendPasswordResetEmail(
   email: string,
   resetUrl: string,
@@ -10,5 +7,17 @@ export async function sendPasswordResetEmail(
   if (!env.isProduction || env.exposeResetTokenInDev) {
     console.log(`[email] Password reset for ${email}: ${resetUrl}`);
   }
-  // Production: await resend.emails.send({ ... })
+}
+
+export async function sendWorkspaceInviteEmail(
+  email: string,
+  workspaceName: string,
+  inviteUrl: string,
+  inviterName: string,
+): Promise<void> {
+  if (!env.isProduction || env.exposeResetTokenInDev) {
+    console.log(
+      `[email] Workspace invite for ${email} to "${workspaceName}" from ${inviterName}: ${inviteUrl}`,
+    );
+  }
 }

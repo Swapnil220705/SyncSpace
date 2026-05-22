@@ -3,6 +3,7 @@ import { X, LayoutDashboard, FolderKanban, Sparkles, Settings, Users } from 'luc
 import { cn } from '@/utils/cn';
 import { Logo } from '@/components/ui/Logo';
 import { Button } from '@/components/ui/Button';
+import { WorkspaceSwitcher } from '@/components/workspace/WorkspaceSwitcher';
 
 const navItems = [
   { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
@@ -35,6 +36,7 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
             <X className="h-5 w-5" />
           </Button>
         </div>
+        <WorkspaceSwitcher />
         <nav className="flex-1 space-y-1 p-3">
           {navItems.map(({ to, label, icon: Icon }) => (
             <NavLink

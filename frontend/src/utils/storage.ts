@@ -1,6 +1,7 @@
 const ACCESS_TOKEN_KEY = 'syncspace_access_token';
 const REFRESH_TOKEN_KEY = 'syncspace_refresh_token';
 const THEME_KEY = 'syncspace_theme';
+const WORKSPACE_KEY = 'syncspace_workspace_id';
 
 export function getStoredAccessToken(): string | null {
   return localStorage.getItem(ACCESS_TOKEN_KEY);
@@ -59,4 +60,16 @@ export function resolveTheme(mode: ThemeMode): 'light' | 'dark' {
 export function applyThemeToDocument(mode: ThemeMode): void {
   const resolved = resolveTheme(mode);
   document.documentElement.classList.toggle('dark', resolved === 'dark');
+}
+
+export function getStoredWorkspaceId(): string | null {
+  return localStorage.getItem(WORKSPACE_KEY);
+}
+
+export function setStoredWorkspaceId(id: string): void {
+  localStorage.setItem(WORKSPACE_KEY, id);
+}
+
+export function clearStoredWorkspaceId(): void {
+  localStorage.removeItem(WORKSPACE_KEY);
 }

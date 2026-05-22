@@ -13,12 +13,14 @@ import { AiAssistantPage } from '@/pages/dashboard/AiAssistantPage';
 import { TeamPage } from '@/pages/dashboard/TeamPage';
 import { SettingsPage } from '@/pages/dashboard/SettingsPage';
 import { LandingPage } from '@/pages/LandingPage';
+import { InvitePage } from '@/pages/InvitePage';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <LandingPage />,
   },
+  { path: '/invite', element: <InvitePage /> },
   {
     element: <PublicRoute />,
     children: [

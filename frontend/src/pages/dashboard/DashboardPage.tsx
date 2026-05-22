@@ -1,36 +1,57 @@
-import { Sparkles, CheckCircle2, Clock, FolderKanban } from 'lucide-react';
+import { FolderKanban, Users, Mail, Activity } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { useAuth } from '@/hooks/useAuth';
-
-const stats = [
-  { label: 'Active projects', value: '12', icon: FolderKanban },
-  { label: 'Tasks due today', value: '8', icon: Clock },
-  { label: 'Completed this week', value: '34', icon: CheckCircle2 },
-  { label: 'AI suggestions', value: '5', icon: Sparkles },
-];
+import { useWorkspaceStore } from '@/stores/workspaceStore';
+import { ActivityFeed } from '@/components/workspace/ActivityFeed';
+import { EmptyWorkspace } from '@/components/workspace/EmptyWorkspace';
 
 export function DashboardPage() {
   const { user } = useAuth();
+  const current = useWorkspaceStore((s) => s.currentWorkspace);
+  const projects = useWorkspaceStore((s) => s.projects);
+  const members = useWorkspaceStore((s) => s.members);
+  const invitations = useWorkspaceStore((s) => s.invitations);
+  const activities = useWorkspaceStore((s) => s.activities);
+  const workspaces = useWorkspaceStore((s) => s.workspaces);
+
+  if (workspaces.length === 0) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <EmptyWorkspace />
+      </div>
+    );
+  }
+
+  if (!current) return null;
+
+  const activeProjects = projects.filter((p) => p.status === 'active').length;
+
+  const stats = [
+    { label: 'Projects', value: String(projects.length), icon: FolderKanban },
+    { label: 'Active', value: String(activeProjects), icon: Activity },
+    { label: 'Team members', value: String(members.length), icon: Users },
+    { label: 'Pending invites', value: String(invitations.length), icon: Mail },
+  ];
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="animate-slide-up">
         <h1 className="text-2xl font-semibold tracking-tight text-content">
           Good morning, {user?.name?.split(' ')[0] ?? 'there'}
         </h1>
         <p className="mt-1 text-sm text-content-muted">
-          Here&apos;s what&apos;s happening across your workspace today.
+          Overview for <span className="font-medium text-content">{current.name}</span>
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 animate-stagger">
         {stats.map(({ label, value, icon: Icon }) => (
           <Card key={label} className="flex items-start gap-4 p-5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-muted text-brand">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-muted text-brand">
               <Icon className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-2xl font-semibold text-content">{value}</p>
+              <p className="text-2xl font-semibold tabular-nums text-content">{value}</p>
               <p className="text-sm text-content-muted">{label}</p>
             </div>
           </Card>
@@ -38,19 +59,23 @@ export function DashboardPage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
+        <ActivityFeed activities={activities} limit={8} />
         <Card>
-          <h2 className="font-semibold text-content">Recent activity</h2>
-          <ul className="mt-4 space-y-3 text-sm text-content-muted">
-            <li>Design system sprint moved to In Review</li>
-            <li>AI generated 6 subtasks for &quot;API v2 rollout&quot;</li>
-            <li>@alex commented on onboarding flow</li>
+          <h2 className="font-semibold text-content">Quick links</h2>
+          <ul className="mt-4 space-y-2 text-sm">
+            <li>
+              <a href="/dashboard/projects" className="text-brand hover:underline">
+                View all projects →
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard/team" className="text-brand hover:underline">
+                Manage team →
+              </a>
+            </li>
           </ul>
-        </Card>
-        <Card>
-          <h2 className="font-semibold text-content">AI insights</h2>
-          <p className="mt-2 text-sm text-content-muted">
-            3 projects are at risk of slipping this week. Ask the assistant to
-            rebalance workload or draft standup notes.
+          <p className="mt-6 text-sm text-content-muted">
+            Your role: <span className="capitalize font-medium text-content">{current.role}</span>
           </p>
         </Card>
       </div>

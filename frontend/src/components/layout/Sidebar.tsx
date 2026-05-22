@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { Logo } from '@/components/ui/Logo';
+import { WorkspaceSwitcher } from '@/components/workspace/WorkspaceSwitcher';
 import { useAuth } from '@/hooks/useAuth';
 
 const navItems = [
@@ -28,6 +29,7 @@ export function Sidebar() {
       <div className="flex h-16 items-center border-b border-border px-5">
         <Logo />
       </div>
+      <WorkspaceSwitcher />
       <nav className="flex-1 space-y-1 p-3">
         {navItems.map(({ to, label, icon: Icon }) => (
           <NavLink

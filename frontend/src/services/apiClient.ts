@@ -3,6 +3,7 @@ import {
   clearStoredTokens,
   getStoredAccessToken,
   getStoredRefreshToken,
+  getStoredWorkspaceId,
   setStoredTokens,
 } from '@/utils/storage';
 import type { ApiResponse, AuthPayload } from '@/types/api';
@@ -43,6 +44,10 @@ function attachAuthInterceptor(client: typeof apiClient): void {
     const token = getStoredAccessToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    const workspaceId = getStoredWorkspaceId();
+    if (workspaceId) {
+      config.headers['X-Workspace-Id'] = workspaceId;
     }
     return config;
   });
