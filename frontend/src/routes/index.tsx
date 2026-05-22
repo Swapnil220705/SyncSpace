@@ -2,8 +2,11 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicRoute } from './PublicRoute';
+import { RoleRoute } from './RoleRoute';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
+import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage';
+import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage';
 import { DashboardPage } from '@/pages/dashboard/DashboardPage';
 import { ProjectsPage } from '@/pages/dashboard/ProjectsPage';
 import { AiAssistantPage } from '@/pages/dashboard/AiAssistantPage';
@@ -21,6 +24,8 @@ export const router = createBrowserRouter([
     children: [
       { path: '/login', element: <LoginPage /> },
       { path: '/register', element: <RegisterPage /> },
+      { path: '/forgot-password', element: <ForgotPasswordPage /> },
+      { path: '/reset-password', element: <ResetPasswordPage /> },
     ],
   },
   {
@@ -35,6 +40,22 @@ export const router = createBrowserRouter([
           { path: 'ai', element: <AiAssistantPage /> },
           { path: 'team', element: <TeamPage /> },
           { path: 'settings', element: <SettingsPage /> },
+          {
+            element: <RoleRoute allowedRoles={['admin', 'owner']} />,
+            children: [
+              {
+                path: 'admin',
+                element: (
+                  <div>
+                    <h1 className="text-xl font-semibold text-content">Admin area</h1>
+                    <p className="mt-2 text-sm text-content-muted">
+                      Role-protected route — only admin and owner roles can access.
+                    </p>
+                  </div>
+                ),
+              },
+            ],
+          },
         ],
       },
     ],

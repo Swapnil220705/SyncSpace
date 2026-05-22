@@ -43,7 +43,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
           </div>
           <button
             type="button"
-            onClick={logout}
+            onClick={() => void logout()}
             className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-content-muted hover:bg-surface-muted hover:text-content transition-colors"
           >
             Sign out

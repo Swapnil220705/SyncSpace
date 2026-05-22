@@ -26,6 +26,9 @@ Thumbs.db
 # Test / coverage
 coverage/
 
+# Uploads
+uploads/
+
 # Misc
 *.pem
 .cache/

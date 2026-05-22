@@ -1,16 +1,38 @@
-const TOKEN_KEY = 'syncspace_token';
+const ACCESS_TOKEN_KEY = 'syncspace_access_token';
+const REFRESH_TOKEN_KEY = 'syncspace_refresh_token';
 const THEME_KEY = 'syncspace_theme';
 
+export function getStoredAccessToken(): string | null {
+  return localStorage.getItem(ACCESS_TOKEN_KEY);
+}
+
+export function getStoredRefreshToken(): string | null {
+  return localStorage.getItem(REFRESH_TOKEN_KEY);
+}
+
+export function setStoredTokens(accessToken: string, refreshToken: string): void {
+  localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+  localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+}
+
+export function clearStoredTokens(): void {
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+  localStorage.removeItem(REFRESH_TOKEN_KEY);
+}
+
+/** @deprecated Use getStoredAccessToken */
 export function getStoredToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY);
+  return getStoredAccessToken();
 }
 
+/** @deprecated Use setStoredTokens */
 export function setStoredToken(token: string): void {
-  localStorage.setItem(TOKEN_KEY, token);
+  localStorage.setItem(ACCESS_TOKEN_KEY, token);
 }
 
+/** @deprecated Use clearStoredTokens */
 export function clearStoredToken(): void {
-  localStorage.removeItem(TOKEN_KEY);
+  clearStoredTokens();
 }
 
 export type ThemeMode = 'light' | 'dark' | 'system';

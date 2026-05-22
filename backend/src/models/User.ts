@@ -1,11 +1,16 @@
 import bcrypt from 'bcryptjs';
 import mongoose, { type Document, Schema } from 'mongoose';
 
+export type UserRole = 'user' | 'member' | 'admin' | 'owner';
+
 export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
+  role: UserRole;
   avatarUrl?: string;
+  passwordResetToken?: string;
+  passwordResetExpires?: Date;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidate: string): Promise<boolean>;
@@ -23,7 +28,14 @@ const userSchema = new Schema<IUser>(
       index: true,
     },
     password: { type: String, required: true, minlength: 8, select: false },
+    role: {
+      type: String,
+      enum: ['user', 'member', 'admin', 'owner'],
+      default: 'user',
+    },
     avatarUrl: { type: String },
+    passwordResetToken: { type: String, select: false },
+    passwordResetExpires: { type: Date, select: false },
   },
   { timestamps: true },
 );

@@ -5,9 +5,11 @@ import {
   Sparkles,
   Settings,
   Users,
+  Shield,
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { Logo } from '@/components/ui/Logo';
+import { useAuth } from '@/hooks/useAuth';
 
 const navItems = [
   { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
@@ -18,6 +20,9 @@ const navItems = [
 ];
 
 export function Sidebar() {
+  const { hasRole } = useAuth();
+  const showAdmin = hasRole('admin', 'owner');
+
   return (
     <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-surface-elevated lg:flex">
       <div className="flex h-16 items-center border-b border-border px-5">
@@ -42,6 +47,22 @@ export function Sidebar() {
             {label}
           </NavLink>
         ))}
+        {showAdmin && (
+          <NavLink
+            to="/dashboard/admin"
+            className={({ isActive }) =>
+              cn(
+                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                isActive
+                  ? 'bg-brand-muted text-brand'
+                  : 'text-content-muted hover:bg-surface-muted hover:text-content',
+              )
+            }
+          >
+            <Shield className="h-4 w-4 shrink-0" />
+            Admin
+          </NavLink>
+        )}
       </nav>
       <div className="border-t border-border p-4">
         <p className="text-xs text-content-subtle">SyncSpace v1.0 — AI project management</p>

@@ -21,6 +21,11 @@ export function errorHandler(
     return;
   }
 
+  if (err instanceof Error && (err as { code?: string }).code === 'LIMIT_FILE_SIZE') {
+    res.status(400).json({ success: false, message: 'File too large' });
+    return;
+  }
+
   console.error('[error]', err);
   res.status(500).json({
     success: false,

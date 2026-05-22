@@ -1,35 +1,34 @@
-import { useState, type FormEvent } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthFormLayout } from '@/components/auth/AuthFormLayout';
-import { Input } from '@/components/ui/Input';
+import { FormField } from '@/components/form/FormField';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/hooks/useAuth';
-import { validateRegister } from '@/utils/validators';
+import { registerSchema, type RegisterFormValues } from '@/utils/authSchemas';
 
 export function RegisterPage() {
   const navigate = useNavigate();
-  const { register, isLoading, error, clearError } = useAuth();
-  const [formError, setFormError] = useState<string | null>(null);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { register: registerUser, isLoading, error, clearError } = useAuth();
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { name: '', email: '', password: '' },
+  });
+
+  const onSubmit = handleSubmit(async (values) => {
     clearError();
-    const validationError = validateRegister({ name, email, password });
-    if (validationError) {
-      setFormError(validationError);
-      return;
-    }
-    setFormError(null);
     try {
-      await register({ name, email, password });
-      navigate('/dashboard');
+      await registerUser(values);
+      navigate('/dashboard', { replace: true });
     } catch {
-      /* error handled in store */
+      /* store handles error */
     }
-  }
+  });
 
   return (
     <AuthFormLayout
@@ -44,27 +43,31 @@ export function RegisterPage() {
         </span>
       }
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input label="Full name" value={name} onChange={(e) => setName(e.target.value)} required />
-        <Input
+      <form onSubmit={onSubmit} className="space-y-4" noValidate>
+        <FormField
+          label="Full name"
+          autoComplete="name"
+          registration={register('name')}
+          error={errors.name}
+        />
+        <FormField
           label="Email"
           type="email"
           autoComplete="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
+          registration={register('email')}
+          error={errors.email}
         />
-        <Input
+        <FormField
           label="Password"
           type="password"
           autoComplete="new-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+          registration={register('password')}
+          error={errors.password}
         />
-        {(formError || error) && (
-          <p className="text-sm text-red-500">{formError ?? error}</p>
-        )}
+        <p className="text-xs text-content-muted">
+          At least 8 characters with uppercase, lowercase, and a number.
+        </p>
+        {error && <p className="text-sm text-red-500">{error}</p>}
         <Button type="submit" className="w-full" isLoading={isLoading}>
           Create account
         </Button>
